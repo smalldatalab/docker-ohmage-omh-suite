@@ -1,6 +1,6 @@
 CREATE DATABASE omh;
 
-CREATE DATABSAE admindashboard;
+CREATE DATABASE admindashboard;
 
 \c omh
 
