@@ -1,4 +1,5 @@
 CREATE DATABASE omh;
+CREATE DATABSAE admindashboard;
 \c omh
 
 CREATE TABLE oauth_access_token (
