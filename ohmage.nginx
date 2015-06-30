@@ -5,9 +5,8 @@ server {
 	root /usr/share/nginx/html;
 	index index.html index.htm;
 
-	# Make site accessible from http://localhost/
     # TODO: Update this server name with your base URL
-	server_name ec2-52-4-252-112.compute-1.amazonaws.com/ localhost/;
+	server_name ec2-52-4-252-112.compute-1.amazonaws.com;
 
     keepalive_timeout 10;
     sendfile          on;
@@ -25,26 +24,32 @@ server {
         # allow large file (e.g. image survey responses)
     	client_max_body_size 50M;
         proxy_pass http://localhost:8083/v1.0.M1/dataPoints;
+        proxy_redirect http://localhost:8083/ http://$server_name/;
     }
     # omh dsu resource server surveys endpoint (return the survey accessible to the user)
     location /dsu/surveys {
         proxy_pass http://localhost:8083/v1.0.M1/surveys;
+        proxy_redirect http://localhost:8083/ http://$server_name/;
     }
-    # omh dsu resouce server valite survey description endpoint
+    # omh dsu resource server validate survey description endpoint
     location /dsu/validate-survey {
         proxy_pass http://localhost:8083/v1.0.M1/validate-survey;
+        proxy_redirect http://localhost:8083/ http://$server_name/;
     }
     # omh dsu auth server
     location /dsu/ {
         proxy_pass http://localhost:8082/dsu/;
+        proxy_redirect http://localhost:8082/ http://$server_name/;
     }
     # omh shims callback endpoint (when performing three-leg oauth authorization)
     location /shims/authorize/ {
         proxy_pass http://localhost:8084/authorize/;
+        proxy_redirect http://localhost:8084/ http://$server_name/;
     }
     # admin dashboard
     location /admin/ {
         proxy_pass http://localhost:3000/admin/;
+        proxy_redirect http://localhost:3000/ http://$server_name/;
     }
     location /assets/ {
         proxy_pass http://localhost:3000/assets/;
