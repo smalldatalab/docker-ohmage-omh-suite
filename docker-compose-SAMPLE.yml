@@ -1,0 +1,77 @@
+ohmage-nginx:
+    image: smalldatalab/ohmage-nginx:latest
+    links:
+        - ohmage-auth:ohmage-auth
+        - ohmage-resource:ohmage-resource
+        - ohmage-admin:ohmage-admin
+        - ohmage-shim:ohmage-shim
+        - ohmage-dpu:ohmage-dpu
+    ports:
+        - "80:80"
+    volumes:
+        - /var/log/ohmage/nginx:/var/log/nginx
+    volumes_from:
+        - ohmage-resource
+ohmage-mongo:
+    image: mongo:latest
+ohmage-postgres:
+    image: postgres:latest
+ohmage-auth:
+    image: smalldatalab/ohmage-auth-server:latest
+    links:
+        - ohmage-postgres:omh-postgres
+        - ohmage-mongo:omh-mongo
+    ports:
+        - "8082:8082"
+    environment:
+        - application.url={BASE URL}/dsu/
+        - google.clientId={GOOGLE CLIENT ID}
+        - google.clientSecret={GOOGLE CLIENT SECRET}
+        - server.port=8082
+    volumes:
+        - /var/log/ohmage/auth:/var/log/ohmage-auth
+ohmage-resource:
+    image: smalldatalab/ohmage-resource-server:latest
+    links:
+        - ohmage-postgres:omh-postgres
+        - ohmage-mongo:omh-mongo
+    ports:
+        - "8083:8083"
+    environment:
+        - spring.dataSource.username={POSTGRES USERNAME}
+        - spring.dataSource.password={POSTGRES PASSWORD}
+        - server.port=8083
+    volumes:
+        - /var/log/ohmage/resource:/var/log/ohmage-resource
+        - /var/www/html/omh-user-tools
+ohmage-admin:
+    image: smalldatalab/ohmage-admin-server:latest
+    links:
+        - ohmage-postgres:omh-postgres
+        - ohmage-mongo:omh-mongo
+    ports:
+        - "3000:3000"
+    environment:
+        - APP_DB_DATABASE=admindashboard
+        - APP_DB_USERNAME={POSTGRES USERNAME}
+        - APP_DB_PASSWORD={POSTGRES PASSWORD}
+        - MANDRILL_USERNAME={"MAIL USERNAME"}
+        - MANDRILL_PASSWORD={"MAIL PASSWORD"}
+ohmage-shim:
+    image: smalldatalab/ohmage-shim-server:latest
+    links:
+        - ohmage-mongo:omh-mongo
+    ports:
+        - "8084:8084"
+    environment:
+        - openmhealth.shim.server.callbackUrlBase={BASE URL}/shims
+        - openmhealth.shim.fitbit.clientId={FITBIT API KEY}
+        - openmhealth.shim.fitbit.clientSecret={FITBIT API SECRET}
+        - server.port=8084
+ohmage-dpu:
+    image: smalldatalab/ohmage-dpu-server:latest
+    links:
+        - ohmage-mongo:omh-mongo
+    ports:
+        - "8085:8085"
+

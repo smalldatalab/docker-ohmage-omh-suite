@@ -1,0 +1,2 @@
+# Don't commit the file with actual variables
+docker-compose.yml
