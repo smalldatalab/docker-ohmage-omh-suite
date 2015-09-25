@@ -80,7 +80,7 @@ sudo docker-compose up -d
 ```
 
 
-## Initialize the databases and restart
+## Step 5: Initialize the databases and restart
 
 The Mongo database is ready to go, but the Postgres database needs to be initialized by adding a few tables.  To add those tables, complete the following steps:
 
