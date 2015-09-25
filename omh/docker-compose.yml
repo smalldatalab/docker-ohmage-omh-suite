@@ -1,17 +1,3 @@
-ohmage-nginx:
-    image: smalldatalab/ohmage-nginx:latest
-    links:
-        - ohmage-auth:ohmage-auth
-        - ohmage-resource:ohmage-resource
-        - ohmage-admin:ohmage-admin
-        - ohmage-shim:ohmage-shim
-        - ohmage-dpu:ohmage-dpu
-    ports:
-        - "80:80"
-    volumes:
-        - /var/log/ohmage/nginx:/var/log/nginx
-    volumes_from:
-        - ohmage-resource
 ohmage-mongo:
     image: mongo:latest
 ohmage-postgres:
@@ -38,8 +24,8 @@ ohmage-resource:
     ports:
         - "8083:8083"
     environment:
-        - spring.dataSource.username={POSTGRES USERNAME}
-        - spring.dataSource.password={POSTGRES PASSWORD}
+        - spring.dataSource.username=postgres
+        - spring.dataSource.password=postgres
         - server.port=8083
     volumes:
         - /var/log/ohmage/resource:/var/log/ohmage-resource
@@ -53,10 +39,10 @@ ohmage-admin:
         - "3000:3000"
     environment:
         - APP_DB_DATABASE=admindashboard
-        - APP_DB_USERNAME={POSTGRES USERNAME}
-        - APP_DB_PASSWORD={POSTGRES PASSWORD}
-        - MANDRILL_USERNAME={"MAIL USERNAME"}
-        - MANDRILL_PASSWORD={"MAIL PASSWORD"}
+        - APP_DB_USERNAME=postgres
+        - APP_DB_PASSWORD=postgres
+        - MANDRILL_USERNAME="user@example.com"
+        - MANDRILL_PASSWORD="password"
 ohmage-shim:
     image: smalldatalab/ohmage-shim-server:latest
     links:
@@ -74,4 +60,17 @@ ohmage-dpu:
         - ohmage-mongo:omh-mongo
     ports:
         - "8085:8085"
-
+ohmage-nginx:
+    image: smalldatalab/ohmage-nginx:latest
+    links:
+        - ohmage-auth:ohmage-auth
+        - ohmage-resource:ohmage-resource
+        - ohmage-admin:ohmage-admin
+        - ohmage-shim:ohmage-shim
+        - ohmage-dpu:ohmage-dpu
+    ports:
+        - "80:80"
+    volumes:
+        - /var/log/ohmage/nginx:/var/log/nginx
+    volumes_from:
+        - ohmage-resource
