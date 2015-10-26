@@ -135,12 +135,12 @@ To create a sample end user (i.e. a participant), you need to access the authori
 ## Create a study through the Admin Dashboard, and have a participant enroll
 Now that you have an admin user (study coordinator) and an end user (participant), you can login to the Admin Dashboard and create a study.
 
-1. In a browser, navigate to {BASE URL}/admin and login with the credentials you just added for the admin user.
+1. In a browser, navigate to {BASE URL}/admin and login with the credentials you just added for the admin user (default pwd is 'password', which you should change on your first login).
 1. Navigate to `Studies` through the top menu bar, and create a study named `SystemTest`.
 1. In a different browser window, go to {BASE URL}/dsu/studies/SystemTest/enroll.  Signin as 'localguy', or the end user you just added.  After login, click the button to enroll in the study as the participant.
 1. Go back to the Admin Dashboard browser window, and navigate to `Participants` through the top menu bar. You should see a participant listed and can verify they are enrolled in the test study.  The 'ID' listed in the far left column is the participant ID you will use to reference this participant as an admin.
 
-## Sign into end user homepage
+## Signin to end user homepage
 Participants can login to a homepage to view available apps, the studies they are enrolled in, and links to the visualization tools.
 
 1. In a browser, navigate to {BASE URL}/dsu and login.
