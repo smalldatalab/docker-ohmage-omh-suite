@@ -61,34 +61,45 @@ If you are setting up the a local version of Ohmage, you can use the file as is.
 
 Our testing was done on an AWS instance, with their Ubuntu 14.04.2 distro. However, the suite should run fine on any OS that is supported by Docker.  The rest of the instructions assume you are able to access a terminal on your host machine (ssh).
 
+NOTE: On VM hosts such as AWS, port 80 is not open, by default.  Through the AWS Console, you can open port 80 by following the steps [here](http://stackoverflow.com/questions/5004159/opening-port-80-ec2-amazon-web-services).
+
 Once your machine is setup, you can find instructions to install Docker for your OS [here](https://docs.docker.com/installation/).
 
 If you are using Ubuntu, the instructions are [here](https://docs.docker.com/installation/ubuntulinux/).
+
+In addition to the Docker Engine component, you also will need to install Docker Compose, to help automate the setup.  Instuctions for that can be found [here](https://docs.docker.com/compose/install/).
+
+NOTE: If you get a `Permission denied` error when trying to install via curl, run `sudo -i` first.
 
 ## Step 4: Transfer you docker-compose file and run it
 Somehow, you need to get your modified `docker-compose.yml` file to the server, in the home directory.
 
 If you are using Linux, you can transfer the file with:
 ```
-scp docker-compose.yml ubuntu@{BASE URL}:~/omh
+scp docker-compose.yml ubuntu@{BASE URL}:~
 ```
 
 Once the file is transferred, you can run it through the terminal on the machine with:
 ```
-cd ~/omh
+cd ~
+mkdir omh
+mv docker-compose.yml omh
+cd omh
 sudo docker-compose up -d
 ```
+NOTE: We move the file to the `omh` directory to give each Docker container a consistent naming prefix, because it by default includes the current directory name.
 
 
 ## Step 5: Initialize the databases and restart
 
 The Mongo database is ready to go, but the Postgres database needs to be initialized by adding a few tables.  To add those tables, complete the following steps:
 
-1. Run `docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
+1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
 1. Run `psql -U postgres` in the resulting shell to start `psql`
 1. Copy and paste the contents of the [database setup script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/initialize-auth.sql) to create the schema.
 1. Update the contents of the [client initialization script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/initialize-oauth-clients.sql) to a) select the client apps you will use with your installation, and b) setting the `client_secret` values, which you can get from your contact in the Small Data Lab.
-1. Copy and paste the contents of the updated script, to create the records in the database. 
+1. Copy and paste the contents of the updated script, to create the records in the database.
+1. (Optional) Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address. 
 1. `\q` to exit `psql`
 1. `exit` to exit the shell
 
@@ -98,4 +109,41 @@ sudo docker-compose stop
 sudo docker-compose up -d
 ```
 
-At this point, you should be ready to go.  For instructions on how to setup some test users to verify things are working properly, you can walk through the tutorial [here](https://github.com/smalldatalab/docker-ohmage-omh-suite/wiki/Sample-User-Walkthru)
+At this point, you should be ready to go.  Optionally, you can follow the 'Test Instructions' below, so create a test user and login.
+
+# Test Setup Instructions
+To verify that things are working, you can create an admin user and an end user, and configure a study.  The following instructions walk you through this setup.
+
+## Create admin user
+If you skipped the step to create an admin user when initializing the Postgres database, you'll need to do that now (if you did create an admin user already, skip to next section).  To create an admin user for yourself, access the database and create a record, as follows.
+
+1. Connect to server in a terminal.
+1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
+1. Run `psql -U postgres` in the resulting shell to start `psql`
+1. Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address. 
+1. `\q` to exit `psql`
+1. `exit` to exit the shell
+
+## Create an end user
+To create a sample end user (i.e. a participant), you need to access the authorization server, as follows.
+
+1. Connect to server in a terminal.
+1. Run `sudo docker exec -it omh_ohmage-auth_1 bash` to start a shell on the `ohmage-auth` container.
+1. Run `curl -H "Content-Type:application/json" --data '{"username": "localguy", "password": "password", "email_address": "test1@example.com"}' http://127.0.0.1:8082/dsu/internal/users -v` to create a test user account locally, replacing 'localguy' and 'password' with your own information.
+1. Run `exit` to exit the shell.
+
+## Create a study through the Admin Dashboard, and have a participant enroll
+Now that you have an admin user (study coordinator) and an end user (participant), you can login to the Admin Dashboard and create a study.
+
+1. In a browser, navigate to {BASE URL}/admin and login with the credentials you just added for the admin user.
+1. Navigate to `Studies` through the top menu bar, and create a study named `SystemTest`.
+1. In a different browser window, go to {BASE URL}/dsu/studies/SystemTest/enroll.  Signin as 'localguy', or the end user you just added.  After login, click the button to enroll in the study as the participant.
+1. Go back to the Admin Dashboard browser window, and navigate to `Participants` through the top menu bar. You should see a participant listed and can verify they are enrolled in the test study.  The 'ID' listed in the far left column is the participant ID you will use to reference this participant as an admin.
+
+## Sign into end user homepage
+Participants can login to a homepage to view available apps, the studies they are enrolled in, and links to the visualization tools.
+
+1. In a browser, navigate to {BASE URL}/dsu and login.
+
+
+
