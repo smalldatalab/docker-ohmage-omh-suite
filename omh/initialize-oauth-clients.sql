@@ -122,4 +122,4 @@ INSERT INTO oauth_client_details
              refresh_token_validity, 
              additional_information, 
              autoapprove) 
-VALUES      ('mobility-visualization','dataPoint','xEUJgIdS2f12jmYomzEHIcpeG1Fbg2','read_data_points','implicit','http://judywu.github.io/mobility-ui/','ROLE_CLIENT',null,-1,null,'read_data_points');
+VALUES      ('mobility-visualization','dataPoint','xEUJgIdS2f12jmYomzEHIcpeG1Fbg2','read_data_points','implicit','oauth://callback','ROLE_CLIENT',null,-1,null,'read_data_points');
