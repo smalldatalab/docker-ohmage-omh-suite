@@ -53,9 +53,9 @@ Once created, record the `Client (Consumer) Key` and `Client (Consumer) Secret` 
 ## Step 2: Edit the 'docker-compose' file
 Docker Compose is a tool for configuring multiple Docker containers with a single script.  When creating and starting all the containers, you will specify a single 'docker-compose.yml' file to automate the setup.
 
-The main template for the `docker-compose` file is in this repository in the /omh directory, [here](http://github.com/smalldatalab/omh-dsu/omh/docker-compose.yml).  Copy this file to your local machine, either by cloning the repository or just copy/paste the content into a local file of the same name.
+The main template for the `docker-compose` file is in this repository in the /omh directory, [here](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/docker-compose-EXAMPLE.yml).  Copy this file to your local machine, either by cloning the repository or just copy/paste the content into a local file. Save the new file with the filename `docker-compose.yml`. 
 
-If you are setting up the a local version of Ohmage, you can use the file as is.  If you are running on a remote server, you will want to update the variable values that in the file, indicated with "{}" brackets.
+If you are setting up the a local version of Ohmage, you can use the file as is.  If you are running on a remote server, you will want to update the variable values that are in the file, indicated with "{}" brackets. For the `{BASE URL}`, include the "http://" at the beginning.  For any of the services you are not using (including Google Signin and Mandrill), you can just leave the variables as is, without editing them.
 
 ## Step 3: Setup the machine and install Docker
 
@@ -63,11 +63,7 @@ Our testing was done on an AWS instance, with their Ubuntu 14.04.2 distro. Howev
 
 NOTE: On VM hosts such as AWS, port 80 is not open, by default.  Through the AWS Console, you can open port 80 by following the steps [here](http://stackoverflow.com/questions/5004159/opening-port-80-ec2-amazon-web-services).
 
-Once your machine is setup, you can find instructions to install Docker for your OS [here](https://docs.docker.com/installation/).
-
-If you are using Ubuntu, the instructions are [here](https://docs.docker.com/installation/ubuntulinux/).
-
-In addition to the Docker Engine component, you also will need to install Docker Compose, to help automate the setup.  Instuctions for that can be found [here](https://docs.docker.com/compose/install/).
+Once your machine is setup, you can find instructions to install Docker Compose for your OS [here](https://docs.docker.com/compose/install/) (This includes instructions for installing Docker Engine, too).
 
 NOTE: If you get a `Permission denied` error when trying to install via curl, run `sudo -i` first.
 

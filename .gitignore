@@ -1,4 +1,5 @@
 dev
+omh/docker-compose.yml
 
 # Build files for static components
 ohmage-statics/mobility-ui

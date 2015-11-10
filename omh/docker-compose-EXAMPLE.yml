@@ -1,7 +1,12 @@
 ohmage-mongo:
     image: mongo:latest
+    command: --smallfiles
 ohmage-postgres:
     image: postgres:latest
+ohmage-statics:
+    image: smalldatalab/ohmage-statics:latest
+    volumes: 
+        - /var/www/ohmage-statics
 ohmage-auth:
     image: smalldatalab/ohmage-auth-server:latest
     links:
@@ -30,7 +35,6 @@ ohmage-resource:
         - server.port=8083
     volumes:
         - /var/log/ohmage/resource:/var/log/ohmage-resource
-        - /var/www/html/omh-user-tools
 ohmage-admin:
     image: smalldatalab/ohmage-admin-server:latest
     links:
@@ -76,4 +80,4 @@ ohmage-nginx:
     volumes:
         - /var/log/ohmage/nginx:/var/log/nginx
     volumes_from:
-        - ohmage-resource
+        - ohmage-statics
