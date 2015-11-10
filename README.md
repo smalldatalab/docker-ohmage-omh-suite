@@ -127,7 +127,7 @@ To create a sample end user (i.e. a participant), you need to access the authori
 1. Run `curl -H "Content-Type:application/json" --data '{"username": "localguy", "password": "password", "email_address": "test1@example.com"}' http://127.0.0.1:8082/dsu/internal/users -v` to create a test user account locally, replacing 'localguy' and 'password' with your own information.
 1. Run `exit` to exit the shell.
 
-## Create a study through the Admin Dashboard, and have a participant enroll
+## Create a study and enroll a participant
 Now that you have an admin user (study coordinator) and an end user (participant), you can login to the Admin Dashboard and create a study.
 
 1. In a browser, navigate to {BASE URL}/admin and login with the credentials you just added for the admin user (default pwd is 'password', which you should change on your first login).
@@ -142,4 +142,17 @@ Participants can login to a homepage to view available apps, the studies they ar
 
 
 # Logs
-All of the logs for the various containers are written to files in the /var/log/ohmage directory on the host machine.  Each container has a sub-directory for the log files.
+All of the logs for the various containers are written to files in the /var/log/ohmage directory on the host machine.  Each container has a sub-directory for the log files. You can view the directories with `ls -la /var/log/ohmage`.
+
+# Updating a Docker container
+Once installation is completed, your Docker host will have copies of all the images from Docker Hub, and start and stop the containers as you wish.  However, if an updated release of one or multiple images is published to Docker Hub by SmallDataLab, your installation will not automatically update it's local images.
+
+To update a local image to the latest build, you can follow these steps. This is an example for the `ohmage-auth-server` image, but you can substitute any other image and run the same steps.
+
+IMPORTANT: This requires you to temporarily stop the application, so your users will experience downtime.
+
+1. Connect to server in a terminal.
+1. Navigate to the Docker Compose directory with `cd ~/omh`.
+1. Stop ohmage-omh by running `sudo docker-compose stop`.
+1. Fetch the latest build by running `sudo docker pull smalldatalab/ohmage-auth-server:latest`.
+1. Restart the containers by running `sudo docker-compose up -d`.
