@@ -75,7 +75,7 @@ If you are using Linux, you can transfer the file with:
 scp docker-compose.yml ubuntu@{BASE URL}:~
 ```
 
-Once the file is transferred, you can run it through the terminal on the machine with:
+Once the file is transferred, you can move and run it through the terminal on the machine with:
 ```
 cd ~
 mkdir omh
@@ -92,8 +92,8 @@ The Mongo database is ready to go, but the Postgres database needs to be initial
 
 1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
 1. Run `psql -U postgres` in the resulting shell to start `psql`
-1. Copy and paste the contents of the [database setup script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/initialize-auth.sql) to create the schema.
-1. Update the contents of the [client initialization script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/initialize-oauth-clients.sql) to a) select the client apps you will use with your installation, and b) setting the `client_secret` values, which you can get from your contact in the Small Data Lab.
+1. Copy and paste the contents of the [database setup script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/initialize-auth.sql) to create the schema.
+1. Update the contents of the [client initialization script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/initialize-oauth-clients.sql) to a) select the client apps you will use with your installation, and b) setting the `client_secret` values, which you can get from your contact in the Small Data Lab.
 1. Copy and paste the contents of the updated script, to create the records in the database.
 1. (Optional) Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address. 
 1. Update the callback URL for the Mobility UI login, by running `UPDATE oauth_client_details SET web_server_redirect_uri = 'http://{BASE URL}/mobility-ui/#' WHERE client_id = 'mobility-visualization';`, setting `{BASE URL}` for your system.
