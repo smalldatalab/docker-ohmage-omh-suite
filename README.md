@@ -100,6 +100,7 @@ The Mongo database is ready to go, but the Postgres database needs to be initial
 1. Update the contents of the [client initialization script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/initialize-oauth-clients.sql) to a) select the client apps you will use with your installation, and b) setting the `client_secret` values, which you can get from your contact in the Small Data Lab.
 1. Copy and paste the contents of the updated script, to create the records in the database.
 1. (Optional) Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address. 
+1. Update the callback URL for the Mobility UI login, by running `UPDATE oauth_client_details SET web_server_redirect_uri = 'http://{BASE URL}/mobility-ui/#' WHERE client_id = 'mobility-visualization';`, setting `{BASE URL}` for your system.
 1. `\q` to exit `psql`
 1. `exit` to exit the shell
 
@@ -146,4 +147,5 @@ Participants can login to a homepage to view available apps, the studies they ar
 1. In a browser, navigate to {BASE URL}/dsu and login.
 
 
-
+# Logs
+All of the logs for the various containers are written to files in the /var/log/ohmage directory on the host machine.  Each container has a sub-directory for the log files.
