@@ -48,6 +48,8 @@ ohmage-admin:
         - APP_DB_PASSWORD=postgres
         - MANDRILL_USERNAME="user@example.com"
         - MANDRILL_PASSWORD="password"
+    volumes:
+        - /var/log/ohmage/admin:/sdl-admin-dashboard/log
 ohmage-shim:
     image: smalldatalab/ohmage-shim-server:latest
     links:
@@ -55,6 +57,7 @@ ohmage-shim:
     ports:
         - "8084:8084"
     environment:
+        - logging.path=/var/log/ohmage-shim
         - openmhealth.shim.server.callbackUrlBase={BASE URL}/shims
         - openmhealth.shim.fitbit.clientId={FITBIT API KEY}
         - openmhealth.shim.fitbit.clientSecret={FITBIT API SECRET}
@@ -65,8 +68,11 @@ ohmage-dpu:
     image: smalldatalab/ohmage-dpu-server:latest
     links:
         - ohmage-mongo:omh-mongo
+        - ohmage-shim:ohmage-shim
     ports:
         - "8085:8085"
+    volumes:
+        - /var/log/ohmage/dpu:/var/log/ohmage-dpu
 ohmage-nginx:
     image: smalldatalab/ohmage-nginx:latest
     links:
