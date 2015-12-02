@@ -17,9 +17,10 @@ ohmage-auth:
         - "8082:8082"
     environment:
         - application.url={BASE URL}/dsu/
-        - google.clientId={GOOGLE CLIENT ID}
-        - google.clientSecret={GOOGLE CLIENT SECRET}
         - server.port=8082
+        # Uncomment next two lines if you want to enable users to login with a google accout
+        #- google.clientId={GOOGLE CLIENT ID}
+        #- google.clientSecret={GOOGLE CLIENT SECRET}
     volumes:
         - /var/log/ohmage/auth:/var/log/ohmage-auth
 ohmage-resource:
@@ -58,10 +59,13 @@ ohmage-shim:
         - "8084:8084"
     environment:
         - logging.path=/var/log/ohmage-shim
-        - openmhealth.shim.server.callbackUrlBase={BASE URL}/shims
-        - openmhealth.shim.fitbit.clientId={FITBIT API KEY}
-        - openmhealth.shim.fitbit.clientSecret={FITBIT API SECRET}
         - server.port=8084
+        - openmhealth.shim.server.callbackUrlBase={BASE URL}/shims
+        # Uncomment the shims that you will use, and supply clientId and clientSecret
+        #- openmhealth.shim.fitbit.clientId={FITBIT API KEY}
+        #- openmhealth.shim.fitbit.clientSecret={FITBIT API SECRET}
+        #- openmhealth.shim.moves.clientId={MOVES API KEY}
+        #- openmhealth.shim.moves.clientSecret={MOVES API SECRET}
     volumes:
         - /var/log/ohmage/shim:/var/log/ohmage-shim
 ohmage-dpu:
