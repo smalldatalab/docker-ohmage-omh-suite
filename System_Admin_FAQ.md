@@ -15,20 +15,18 @@ ohmage-auth:
     ...
 ```
 
+---
+
 ### Can I use SSL for HTTPS?
 Yes, we provide a basic nginx setup for using HTTPS and redirecting all HTTP requests to HTTPS. If this meets your needs, you will only need to slightly modify your `docker-compose.yml` file, and put the .crt and .key certificate files in that same directory on the host machine. If you need a custom nginx configuration, you can simply build your own Docker image for nginx, and use that instead of the `smalldatalab/ohmage-nginx` one. A reference for that nginx.conf and Dockerfile can be found [here](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/ohmage-nginx).
 
 To use the default SSL configuration we provide, you need to:
 
 1. Copy your .crt and .key files to the host machine in the same directory as `docker-compose.yml` file, AND rename them to `ohmage-omh-instance.crt` and `ohmage-omh-instance.key`, respectively.  This naming is important, because the nginx container will look for those specific file names.
-1. Update your `docker-compose.yml` file to use the pre-built ssl version of the nginx Docker image, and add port 443.
+1. Update your `docker-compose.yml` file to use the pre-built ssl version of the nginx Docker image, and add port 443. For example,
 
-For example,
-
-`docker-compose.yml`
 ```
-    ...
-
+...
 ohmage-nginx
 	restart: unless-stopped
     image: smalldatalab/ohmage-nginx-ssl:latest     # <-- Change the image it builds from
