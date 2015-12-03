@@ -23,8 +23,8 @@ Yes, we provide a basic nginx setup for using HTTPS and redirecting all HTTP req
 
 To use the default SSL configuration we provide, you need to:
 
-1. Copy your .crt and .key files to the host machine in the same directory as `docker-compose.yml` file, AND rename them to `ohmage-omh-instance.crt` and `ohmage-omh-instance.key`, respectively.  This naming is important, because the nginx container will look for those specific file names.
-1. Update your `docker-compose.yml` file to use the pre-built ssl version of the nginx Docker image, and add port 443. For example,
+1. Copy your .crt and .key files to the host machine in the same directory as the `docker-compose.yml` file, AND rename them to `ohmage-omh-instance.crt` and `ohmage-omh-instance.key`.  This naming is important, because the nginx container will look for those specific file names.
+1. Update your `docker-compose.yml` file to a) use the separate ssl version of the nginx Docker image, b) add port 443, and c) mount the volume for the certificates. For example,
 
 ```
 ...
@@ -42,6 +42,7 @@ ohmage-nginx
         - "443:443"      # <-- Add port 443
     volumes:
         - /var/log/ohmage/nginx:/var/log/nginx
+        - ./:/etc/ssl/certs/      # <-- Mount the directory you have the certificates in.
     volumes_from:
         - ohmage-statics
 ```
