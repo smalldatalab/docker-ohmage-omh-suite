@@ -1,5 +1,5 @@
 # System Admin FAQ
-### How do I configure the Docker containers to automatically start on system reboot?
+### Can I configure the Docker containers to start on reboot?
 Docker provides a feature called `restart policies` for individual containers, so that containers can be automatically started when the docker daemon start (daemon starts by default on system boot). More information on this setting can be found [here](https://docs.docker.com/engine/reference/run/#restart-policies-restart).  To set ohmage containers to restart, you can add the flag `restart: always` to each component in the docker-compose.yml file.  For example;
 
 ```
@@ -16,6 +16,7 @@ ohmage-auth:
 ```
 
 ---
+<br>
 
 ### Can I use SSL for HTTPS?
 Yes, we provide a basic nginx setup for using HTTPS and redirecting all HTTP requests to HTTPS. If this meets your needs, you will only need to slightly modify your `docker-compose.yml` file, and put the .crt and .key certificate files in that same directory on the host machine. If you need a custom nginx configuration, you can simply build your own Docker image for nginx, and use that instead of the `smalldatalab/ohmage-nginx` one. A reference for that nginx.conf and Dockerfile can be found [here](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/ohmage-nginx).
@@ -47,3 +48,5 @@ ohmage-nginx
 
 That should be it, and you can start up again with `docker-compose up -d`.
   
+---
+<br>
