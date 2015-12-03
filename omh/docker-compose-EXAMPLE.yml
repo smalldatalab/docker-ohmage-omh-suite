@@ -1,13 +1,19 @@
+# If you don't want the containers to start on machine boot, remove or update the 'restart' flag for each container.
+
 ohmage-mongo:
+    restart: unless-stopped
     image: mongo:latest
     command: --smallfiles
 ohmage-postgres:
+    restart: unless-stopped
     image: postgres:latest
 ohmage-statics:
+    restart: unless-stopped
     image: smalldatalab/ohmage-statics:latest
     volumes: 
         - /var/www/ohmage-statics
 ohmage-auth:
+    restart: unless-stopped
     image: smalldatalab/ohmage-auth-server:latest
     links:
         - ohmage-postgres:omh-postgres
@@ -24,6 +30,7 @@ ohmage-auth:
     volumes:
         - /var/log/ohmage/auth:/var/log/ohmage-auth
 ohmage-resource:
+    restart: unless-stopped
     image: smalldatalab/ohmage-resource-server:latest
     links:
         - ohmage-postgres:omh-postgres
@@ -37,6 +44,7 @@ ohmage-resource:
     volumes:
         - /var/log/ohmage/resource:/var/log/ohmage-resource
 ohmage-admin:
+    restart: unless-stopped
     image: smalldatalab/ohmage-admin-server:latest
     links:
         - ohmage-postgres:omh-postgres
@@ -52,6 +60,7 @@ ohmage-admin:
     volumes:
         - /var/log/ohmage/admin:/sdl-admin-dashboard/log
 ohmage-shim:
+    restart: unless-stopped
     image: smalldatalab/ohmage-shim-server:latest
     links:
         - ohmage-mongo:omh-mongo
@@ -69,6 +78,7 @@ ohmage-shim:
     volumes:
         - /var/log/ohmage/shim:/var/log/ohmage-shim
 ohmage-dpu:
+    restart: unless-stopped
     image: smalldatalab/ohmage-dpu-server:latest
     links:
         - ohmage-mongo:omh-mongo
@@ -78,6 +88,7 @@ ohmage-dpu:
     volumes:
         - /var/log/ohmage/dpu:/var/log/ohmage-dpu
 ohmage-nginx:
+    restart: unless-stopped
     image: smalldatalab/ohmage-nginx:latest
     links:
         - ohmage-auth:ohmage-auth
