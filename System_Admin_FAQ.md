@@ -49,5 +49,6 @@ ohmage-nginx
 
 That should be it, and you can start up again with `docker-compose up -d`.
   
+NOTE: If you are given two .crt files to use, you can simply concatinate them into one file, and nginx will use that. See example [here](https://www.digicert.com/ssl-certificate-installation-nginx.htm).
 ---
 <br>

@@ -8,7 +8,7 @@ Below is a list of all the components that you can install in the suite, along w
 
 - [MongoDB](https://www.mongodb.org/)
 - [PostgreSQL](http://www.postgresql.org/)
-- [Ohmage Authorization Server](https://github.com/smalldatalab/omh-dsu) 
+- [Ohmage Authorization Server](https://github.com/smalldatalab/omh-dsu)
 - [Ohmage Resource Server](https://github.com/smalldatalab/omh-dsu)
 - [Ohmage Shim Server](https://github.com/smalldatalab/omh-shims)
 - [Ohmage Admin Dashboard](https://github.com/smalldatalab/omh-admin-dashboard)
@@ -17,7 +17,7 @@ Below is a list of all the components that you can install in the suite, along w
 At a high level, the setup process will be:
 
 1. Create "client" accounts with 3rd party services that you'll use (e.g. Google, Fitbit, Moves)
-1. Edit the `docker-compose` file for your environment 
+1. Edit the `docker-compose` file for your environment
 1. Setup your machine and install Docker.
 1. Transfer the `docker-compose` file to the machine and run it
 1. Initialize the databases, and restart
@@ -53,7 +53,7 @@ Once created, record the `Client (Consumer) Key` and `Client (Consumer) Secret` 
 ## Step 2: Edit the 'docker-compose' file
 Docker Compose is a tool for configuring multiple Docker containers with a single script.  When creating and starting all the containers, you will specify a single 'docker-compose.yml' file to automate the setup.
 
-The main template for the `docker-compose` file is in this repository in the /omh directory, [here](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/docker-compose-EXAMPLE.yml).  Copy this file to your local machine, either by cloning the repository or just copy/paste the content into a local file. Save the new file with the filename `docker-compose.yml`. 
+The main template for the `docker-compose` file is in this repository in the /omh directory, [here](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/docker-compose-EXAMPLE.yml).  Copy this file to your local machine, either by cloning the repository or just copy/paste the content into a local file. Save the new file with the filename `docker-compose.yml`.
 
 If you are setting up the a local version of Ohmage, you can use the file as is.  If you are running on a remote server, you will want to update the variable values that are in the file, indicated with "{}" brackets. For the `{BASE URL}`, include the "http://" at the beginning.  For any of the services you are not using (including Google Signin and Mandrill), you can just leave the variables as is, without editing them.
 
@@ -67,21 +67,20 @@ Once your machine is setup, you can find instructions to install Docker Compose 
 
 NOTE: If you get a `Permission denied` error when trying to install via curl, run `sudo -i` first.
 
-## Step 4: Transfer you docker-compose file and run it
+## Step 4: Transfer your docker-compose file
 Somehow, you need to get your modified `docker-compose.yml` file to the server, in the home directory.
 
-If you are using Linux, you can transfer the file with:
+If you are using Linux, you can transfer the file with something like:
 ```
 scp docker-compose.yml ubuntu@{BASE URL}:~
 ```
 
-Once the file is transferred, you can move and run it through the terminal on the machine with:
+Once the file is transferred, you can move it to the correct directory with:
 ```
 cd ~
 mkdir omh
 mv docker-compose.yml omh
 cd omh
-sudo docker-compose up -d
 ```
 NOTE: We move the file to the `omh` directory to give each Docker container a consistent naming prefix, because it by default includes the current directory name.
 
@@ -90,6 +89,7 @@ NOTE: We move the file to the `omh` directory to give each Docker container a co
 
 The Mongo database is ready to go, but the Postgres database needs to be initialized by adding a few tables.  To add those tables, complete the following steps:
 
+1. Start the Postgres container with `sudo docker-compose up -d postgres`.
 1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
 1. Run `psql -U postgres` in the resulting shell to start `psql`
 1. Copy and paste the contents of the [database setup script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/initialize-auth.sql) to create the schema.
@@ -98,10 +98,12 @@ The Mongo database is ready to go, but the Postgres database needs to be initial
 1. `\q` to exit `psql`
 1. `exit` to exit the shell
 
-Once the databases are ready, you can simply restart all the containers and they will be ready to go.  Restart with:
+Once the databases are ready, you can simply start all the containers and they will be ready to go.  Start all containers with:
 ```
-sudo docker-compose stop
 sudo docker-compose up -d
+
+# Stop all containers with
+sudo docker-compose stop
 ```
 
 At this point, you should be ready to go.  Optionally, you can follow the 'Test Instructions' below, so create a test user and login.
@@ -115,7 +117,7 @@ First, create an admin user so you can access the Admin Dashboard.  You can acce
 1. Connect to server in a terminal.
 1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
 1. Run `psql -U postgres` in the resulting shell to start `psql`
-1. Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address. 
+1. Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address.
 1. `\q` to exit `psql`
 1. `exit` to exit the shell
 
