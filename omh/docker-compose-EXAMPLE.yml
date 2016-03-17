@@ -1,71 +1,70 @@
-# If you don't want the containers to start on machine boot, remove or update the 'restart' flag for each container.
+# If you don't want the containers to start on machine boot, remove or update
+#  the 'restart' flag for each container.
 
-ohmage-mongo:
+mongo:
     restart: unless-stopped
-    image: mongo:latest
-    command: --smallfiles
-ohmage-postgres:
+    image: mongo:3.2.1
+    volumes:
+        - mongodata:/data/db
+    command: --smallfiles ## remove this line for production
+postgres:
     restart: unless-stopped
-    image: postgres:latest
-ohmage-statics:
-    restart: unless-stopped
-    image: smalldatalab/ohmage-statics:latest
-    volumes: 
-        - /var/www/ohmage-statics
-ohmage-auth:
+    image: postgres:9.4.5
+    volumes:
+        - postgresdata:/var/lib/postgresql/data
+auth:
     restart: unless-stopped
     image: smalldatalab/ohmage-auth-server:latest
     links:
-        - ohmage-postgres:omh-postgres
-        - ohmage-mongo:omh-mongo
-        - ohmage-shim:ohmage-shim
-    ports:
-        - "8082:8082"
+        - postgres:omh-postgres
+        - mongo:omh-mongo
+        - shim:ohmage-shim
     environment:
         - application.url={BASE URL}/dsu/
         - server.port=8082
         # Uncomment next two lines if you want to enable users to login with a google accout
         #- google.clientId={GOOGLE CLIENT ID}
         #- google.clientSecret={GOOGLE CLIENT SECRET}
-    volumes:
-        - /var/log/ohmage/auth:/var/log/ohmage-auth
-ohmage-resource:
+    # volumes:
+        # Uncomment and update /path/to/logs' if you want local log files
+        # - /path/to/logs/auth:/var/log/ohmage-auth
+resource:
     restart: unless-stopped
     image: smalldatalab/ohmage-resource-server:latest
     links:
-        - ohmage-postgres:omh-postgres
-        - ohmage-mongo:omh-mongo
-    ports:
-        - "8083:8083"
+        - postgres:omh-postgres
+        - mongo:omh-mongo
     environment:
         - spring.dataSource.username=postgres
         - spring.dataSource.password=postgres
         - server.port=8083
-    volumes:
-        - /var/log/ohmage/resource:/var/log/ohmage-resource
-ohmage-admin:
+    # volumes:
+        # Uncomment and update /path/to/logs' if you want local log files
+        # - /path/to/logs/resource:/var/log/ohmage-resource
+admin:
     restart: unless-stopped
     image: smalldatalab/ohmage-admin-server:latest
     links:
-        - ohmage-postgres:omh-postgres
-        - ohmage-mongo:omh-mongo
-    ports:
-        - "3000:3000"
+        - postgres:omh-postgres
+        - mongo:omh-mongo
     environment:
         - APP_DB_DATABASE=admindashboard
         - APP_DB_USERNAME=postgres
         - APP_DB_PASSWORD=postgres
+        - APP_DB_HOST=omh-postgres
+        - APP_MONGO_HOST=omh-mongo
+        - APP_MONGO_DATABASE=omh
+        - MANDRILL_HOST=https://ohmage-omh.smalldata.io
         - MANDRILL_USERNAME="user@example.com"
         - MANDRILL_PASSWORD="password"
-    volumes:
-        - /var/log/ohmage/admin:/sdl-admin-dashboard/log
-ohmage-shim:
+    # volumes:
+        # Uncomment and update /path/to/logs' if you want local log files
+        # - /path/to/logs/admin:/sdl-admin-dashboard/log
+shim:
     restart: unless-stopped
     image: smalldatalab/ohmage-shim-server:latest
     links:
-        - ohmage-mongo:omh-mongo
-    ports:
-        - "8084:8084"
+        - mongo:omh-mongo
     environment:
         - logging.path=/var/log/ohmage-shim
         - server.port=8084
@@ -75,30 +74,29 @@ ohmage-shim:
         #- openmhealth.shim.fitbit.clientSecret={FITBIT API SECRET}
         #- openmhealth.shim.moves.clientId={MOVES API KEY}
         #- openmhealth.shim.moves.clientSecret={MOVES API SECRET}
-    volumes:
-        - /var/log/ohmage/shim:/var/log/ohmage-shim
-ohmage-dpu:
+    # volumes:
+        # Uncomment and update '/path/to/logs' if you want local log files
+        # - /path/to/logs/shim:/var/log/ohmage-shim
+dpu:
     restart: unless-stopped
     image: smalldatalab/ohmage-dpu-server:latest
     links:
-        - ohmage-mongo:omh-mongo
-        - ohmage-shim:ohmage-shim
-    ports:
-        - "8085:8085"
-    volumes:
-        - /var/log/ohmage/dpu:/var/log/ohmage-dpu
-ohmage-nginx:
+        - mongo:omh-mongo
+        - shim:ohmage-shim
+    # volumes:
+        # Uncomment and update '/path/to/logs' if you want local log files
+        # - /path/to/logs/dpu:/var/log/ohmage-dpu
+nginx:
     restart: unless-stopped
     image: smalldatalab/ohmage-nginx:latest
     links:
-        - ohmage-auth:ohmage-auth
-        - ohmage-resource:ohmage-resource
-        - ohmage-admin:ohmage-admin
-        - ohmage-shim:ohmage-shim
-        - ohmage-dpu:ohmage-dpu
+        - auth:ohmage-auth
+        - resource:ohmage-resource
+        - admin:ohmage-admin
+        - shim:ohmage-shim
+        - dpu:ohmage-dpu
     ports:
         - "80:80"
-    volumes:
-        - /var/log/ohmage/nginx:/var/log/nginx
-    volumes_from:
-        - ohmage-statics
+    # volumes:
+        # Uncomment and update '/path/to/logs' if you want local log files
+        # - /path/to/logs/nginx:/var/log/nginx

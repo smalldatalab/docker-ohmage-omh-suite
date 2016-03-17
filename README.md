@@ -90,7 +90,7 @@ NOTE: We move the file to the `omh` directory to give each Docker container a co
 The Mongo database is ready to go, but the Postgres database needs to be initialized by adding a few tables.  To add those tables, complete the following steps:
 
 1. Start the Postgres container with `sudo docker-compose up -d postgres`.
-1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
+1. Run `sudo docker exec -it omh_postgres_1 bash` to start a shell on the `postgres` container
 1. Run `psql -U postgres` in the resulting shell to start `psql`
 1. Copy and paste the contents of the [database setup script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/initialize-auth.sql) to create the schema.
 1. Copy and paste the contents of the [client initialization script](https://github.com/smalldatalab/docker-ohmage-omh-suite/blob/master/omh/initialize-oauth-clients.sql) to add the client details for the various apps and 3rd party integrations.
@@ -115,7 +115,7 @@ To verify that things are working, you can create an admin user and an end user,
 First, create an admin user so you can access the Admin Dashboard.  You can access the database and create a record, as follows.
 
 1. Connect to server in a terminal.
-1. Run `sudo docker exec -it omh_ohmage-postgres_1 bash` to start a shell on the `ohmage-postgres` container
+1. Run `sudo docker exec -it omh_postgres_1 bash` to start a shell on the `postgres` container
 1. Run `psql -U postgres` in the resulting shell to start `psql`
 1. Create an admin user by running `\c admindashboard` and then `INSERT INTO admin_users(id, email, encrypted_password) VALUES (1, 'admin@example.com', '$2a$10$sj95zYn98jQEuXSD5Im8GOCH7M/wjjtJITSboq3WiMpXs/YwJG/5G');`, replacing admin@example.com with your own email address.
 1. `\q` to exit `psql`
@@ -125,7 +125,7 @@ First, create an admin user so you can access the Admin Dashboard.  You can acce
 To create a sample end user (i.e. a participant), you need to access the authorization server, as follows.
 
 1. Connect to server in a terminal.
-1. Run `sudo docker exec -it omh_ohmage-auth_1 bash` to start a shell on the `ohmage-auth` container.
+1. Run `sudo docker exec -it omh_auth_1 bash` to start a shell on the `auth` container.
 1. Run `curl -H "Content-Type:application/json" --data '{"username": "localguy", "password": "password", "email_address": "test1@example.com"}' http://127.0.0.1:8082/dsu/internal/users -v` to create a test user account locally, replacing 'localguy' and 'password' with your own information.
 1. Run `exit` to exit the shell.
 
@@ -144,7 +144,9 @@ Participants can login to a homepage to view available apps, the studies they ar
 
 
 # Logs
-All of the logs for the various containers are written to files in the /var/log/ohmage directory on the host machine.  Each container has a sub-directory for the log files. You can view the directories with `ls -la /var/log/ohmage`.
+All of the containers will create log files for their server or database.  These files will reside within the containers (not on the host machine's fiel system), unless you update the docker-compose.yml configuration.
+
+In the docker-compose-EXAMPLE.yml file provided, each service has a commented out `volumes` section.  You can uncomment these two lines for each, to write the log files to the host machine using a volume mount. The first part of the parameter (before the :) specifies the location on your host machine you want the parent log directory to be. Each container will create a sub-directory inside this location. The second part of the parameter (after the :) is the location inside the container that the log file is written to.  Edit the first part for your system, but leave the second part as is.
 
 # Updating a Docker container
 Once installation is completed, your Docker host will have copies of all the images from Docker Hub, and start and stop the containers as you wish.  However, if an updated release of one or multiple images is published to Docker Hub by SmallDataLab, your installation will not automatically update it's local images.
