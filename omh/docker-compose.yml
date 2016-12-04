@@ -12,8 +12,8 @@ ohmage-auth:
         - "8082:8082"
     environment:
         - application.url={BASE URL}/dsu/
-        - google.clientId={GOOGLE CLIENT ID}
-        - google.clientSecret={GOOGLE CLIENT SECRET}
+        - google.clientId=346754742548-0pjcmk56p6i1e7bp72bqc9lolju3lc00.apps.googleusercontent.com
+        - google.clientSecret=8Nyeif4vEKUcWEB8mCDTnIvy
         - server.port=8082
     volumes:
         - /var/log/ohmage/auth:/var/log/ohmage-auth
@@ -42,8 +42,8 @@ ohmage-admin:
         - APP_DB_DATABASE=admindashboard
         - APP_DB_USERNAME=postgres
         - APP_DB_PASSWORD=postgres
-        - MANDRILL_USERNAME="user@example.com"
-        - MANDRILL_PASSWORD="password"
+        - MANDRILL_USERNAME="miscaminatas@gmail.com"
+        - MANDRILL_PASSWORD="1029384756"
 ohmage-shim:
     image: smalldatalab/ohmage-shim-server:latest
     links:
